@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper 인터페이스를 이용하는 또 다른 장점은 기존의 XML 을 그대로 사용할 수 있음. 이때 두가지 규칙이 있음. 1. 
+	Mapper 인터페이스 이름과 XML Mapper 의 네임스페이스를 반드시 일치시킬 것. 2. Mapper 인터페이스의 메서드 이름과 
+	XML 의 id 를 반드시 일치시킴. root-context.xml :: sqlSessionFactory 에 매퍼 xml 파일의 경로를 
+	인식하게 함. -->
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.psersistence.ShopDAO">
+
+	<!-- 카테고리별 상품 리스트 : 1차 분류 -->
+	<select id="list_1" resultType="com.shop.vo.GoodsViewVO">
+		select G.GDSNUM,G.GDSNAME,G.CATECODE,C.CATECODEREF,C.CATENAME,
+		GDSPRICE,GDSSTOCK,GDSDES,GDSIMG,GDSDATE,G.GDSIMG,G.GDSTHUMBIMG
+		FROM
+		TBL_GOODS G
+		INNER JOIN GOODS_CATEGORY C
+		ON G.CATECODE = C.CATECODE
+		WHERE G.CATECODE = #{catecode}
+		OR C.CATECODEREF = #{catecoderef}
+	</select>
+	<!-- 카테고리별 상품 리스트 : 2차 분류 -->
+	<select id="list_2" resultType="com.shop.vo.GoodsViewVO">
+		select G.GDSNUM,G.GDSNAME,G.CATECODE,C.CATECODEREF,C.CATENAME,
+		GDSPRICE,GDSSTOCK,GDSDES,GDSIMG,GDSDATE,G.GDSIMG,G.GDSTHUMBIMG
+		FROM
+		TBL_GOODS G
+		INNER JOIN GOODS_CATEGORY C
+		ON G.CATECODE = C.CATECODE
+		WHERE G.CATECODE = #{catecode}
+	</select>
+	<!-- 상품 소감 (댓글 작성) -->
+	<insert id="registReply">
+		insert into tb_reply (GDSNUM,USERID,REPNUM,REPCON)
+		VALUES(#{gdsnum},#{userid},tb_reply_seq.nextval,#{repcon})
+	</insert>
+
+	<!-- 상품 리뷰 (댓글) 후기 리스트 -->
+	<select id="replyList" resultType="com.shop.vo.ReplyListVO">
+		select R.GDSNUM, R.USERID,R.REPCON,R.REPDATE,M.USERNAME
+		FROM TB_REPLY R
+		INNER JOIN TB_MEMBER M
+		ON R.USERID = M.USERID
+		WHERE GDSNUM =#{gdsnum}
+	</select>
+	<!-- 상품 소감 (댓글) 삭제 -->
+	<delete id="deleteReply">
+		delete from tb_reply
+		where REPNUM = #{repnum} and USERID = #{userid}
+	</delete>
+	<!-- 아이디 체크 -->
+	<select id="replyUserIdCheck" resultType="String">
+		select USERID from tb_reply
+		where  REPNUM = #{repnum}
+	</select>
+</mapper>

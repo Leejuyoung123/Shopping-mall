@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/favicon.ico" location="/favicon.ico" />
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	<context:component-scan
+		base-package="com.shop.controller" />
+
+	<!-- 가장 먼저 사용할 빈의 이름과 경로를 설정하고, 매핑을 이용해 인터셉터가 실행되는 조건을 만들어줍니다. /admin/** 
+		이므로, /admin 하위의 모든 경로가 포함됩니다. 조건을 작성했으니, 실행될 빈의 이름을 작성하면 끝납니다. -->
+	<beans:bean id="AdminInterceptor"
+		class="com.shop.interceptor.AdminInterceptor"></beans:bean>
+	<interceptors>
+		<interceptor>
+			<mapping path="/admin/**" />
+			<beans:ref bean="AdminInterceptor" />
+		</interceptor>
+	</interceptors>
+
+	<!-- 업로드 패스 설정 -->
+	<beans:bean class="java.lang.String" id="uploadPath">
+		<beans:constructor-arg
+			value="C:\egov\workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\wtpwebapps\Leejy_ora3\resources" />
+	</beans:bean>
+
+	<!-- 일반 파일 업로드 경로 -->
+	<resources mapping="/imgUpload/**"
+		location="/resources/imgUpload/" />
+	<beans:bean
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+		<beans:property name="maxUploadSize" value="10485760" />
+	</beans:bean>
+	
+	<!-- ck에디터 파일 업로드 경로 -->
+	<resources mapping="/ckUpload/**" location="/resources/ckUpload/" />
+	
+	<!-- 대체 이미지 경로 -->
+	<resources mapping="/images/**" location="/resources/images/" />
+	
+	<!-- html폼에서 첨부파일 업로드 설정 10메가 제한 
+	<beans:bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10485760"></beans:property>
+	</beans:bean>
+	-->
+	<!-- 업로드한 파일이 저장되는 위치: pc용 로 변경 후 올리세요 
+	<beans:bean id="uploadPath" class="java.lang.String">
+		<beans:constructor-arg
+			value="C:\\egov\\workspace\\upload">
+		</beans:constructor-arg>
+	</beans:bean>
+	-->
+	<!-- 업로드한 파일이 저장되는 위치: 로컬 헤로쿠용 경로 <beans:bean id="uploadPath" class="java.lang.String"> 
+		<beans:constructor-arg value="/tmp"> </beans:constructor-arg> </beans:bean> -->
+</beans:beans>

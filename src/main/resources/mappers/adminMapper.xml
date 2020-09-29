@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper 인터페이스를 이용하는 또 다른 장점은 기존의 XML 을 그대로 사용할 수 있음. 이때 두가지 규칙이 있음. 1. 
+	Mapper 인터페이스 이름과 XML Mapper 의 네임스페이스를 반드시 일치시킬 것. 2. Mapper 인터페이스의 메서드 이름과 
+	XML 의 id 를 반드시 일치시킴. root-context.xml :: sqlSessionFactory 에 매퍼 xml 파일의 경로를 
+	인식하게 함. -->
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.psersistence.AdminDAO">
+
+	<!-- 카테고리 호출 -->
+	<select id="category" resultType="com.shop.vo.CategoryVO">
+		select
+		LEVEL,CATENAME,CATECODE,CATECODEREF
+		from goods_category
+		start with CATECODEREF IS NULL CONNECT BY PRIOR
+		CATECODE=CATECODEREF
+	</select>
+	
+	<!-- 상품 등록 -->
+	<insert id="register">
+		insert into tbl_goods (GDSNUM,GDSNAME,CATECODE,GDSPRICE,GDSSTOCK,GDSDES,GDSIMG,GDSTHUMBIMG)
+		values(tbl_goods_seq.nextval,#{gdsname},#{catecode},#{gdsprice},#{gdsstock},#{gdsdes},#{gdsimg},#{gdsthumbimg}
+		)
+	</insert>
+	
+	<!-- 상품 목록 
+	<select id="goodslist" resultType="com.shop.vo.GoodsVO">
+		select GDSNUM,GDSNAME,CATECODE,GDSPRICE,GDSSTOCK,GDSDES,GDSIMG,GDSDATE
+		from tbl_goods
+		order by gdsnum DESC
+	</select>
+	-->
+	<!-- 상품 목록 + -->
+	<select id="goodslist" resultType="com.shop.vo.GoodsViewVO">
+	SELECT
+		G.GDSNUM, G.GDSNAME, G.CATECODE, C.CATECODEREF, C.CATENAME, GDSPRICE, GDSSTOCK, GDSDES, GDSIMG, GDSDATE,
+		G.GDSIMG, G.GDSTHUMBIMG
+		FROM TBL_GOODS G
+			INNER JOIN GOODS_CATEGORY C
+			ON G.CATECODE = C.CATECODE
+	</select>
+	
+	<!-- 상품 조회
+	<select id="goodsView" resultType="com.shop.vo.GoodsVO">
+		select GDSNUM,GDSNAME,CATECODE,GDSPRICE,GDSSTOCK,GDSDES,GDSIMG,GDSDATE
+		from tbl_goods Where GDSNUM = #{gdsnum}
+	</select>
+	 -->
+	 
+	 <!-- 상품조회 + 카테고리 조인 -->
+	 <select id="goodsView" resultType="com.shop.vo.GoodsViewVO">
+	 	select
+	 		G.GDSNUM, G.GDSNAME, G.CATECODE , C.CATECODEREF , C.CATENAME , GDSPRICE , GDSSTOCK, GDSDES,GDSIMG,GDSDATE,
+	 		G.GDSIMG, G.GDSTHUMBIMG
+	 		from tbl_goods G
+	 			INNER JOIN GOODS_CATEGORY C
+	 			ON G.CATECODE = C.CATECODE
+	 			WHERE G.GDSNUM = #{gdsnum}
+	 </select>
+	
+	 <!-- 상품 수정  -->
+	 <update id="goodsModify">
+		 	update tbl_goods
+	   			 set 
+			        GDSNAME  =	#{gdsname},
+			        CATECODE =	#{catecode},
+			        GDSPRICE =	#{gdsprice},
+			        GDSSTOCK =	#{gdsstock},
+			        GDSDES   =	#{gdsdes},
+			        
+			        GDSIMG 	 =  #{gdsimg},
+			        GDSTHUMBIMG = #{gdsthumbimg}
+			        
+			        where GDSNUM = ${gdsnum}
+	 </update>
+	 
+	 <!-- 상품 삭제 -->
+	 <delete id="goodsDelete">
+	 	delete from tbl_goods
+	 	where GDSNUM = #{gdsnum}	
+	 </delete>
+</mapper>

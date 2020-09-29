@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper 인터페이스를 이용하는 또 다른 장점은 기존의 XML 을 그대로 사용할 수 있음. 이때 두가지 규칙이 있음. 1. 
+	Mapper 인터페이스 이름과 XML Mapper 의 네임스페이스를 반드시 일치시킬 것. 2. Mapper 인터페이스의 메서드 이름과 
+	XML 의 id 를 반드시 일치시킴. root-context.xml :: sqlSessionFactory 에 매퍼 xml 파일의 경로를 
+	인식하게 함. -->
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.psersistence.MemberDAO">
+
+<!-- 회원 가입 -->
+<insert id="signup">
+<!-- 오라클 같은경우에는 대문자로 필드값이 만들어지기 떄문에 VO변수는 소문자로 만들었을시 #으로주는 값은 소문자로보내주고 db필드값은 대문자로   -->
+insert into tb_member(USERID,USERPASS,USERNAME,USERPHON)
+values( #{userid},#{userpass},#{username},#{userphon} )
+</insert>
+
+<select id="signin" resultType="com.shop.vo.MemberVO">
+	select USERID,USERNAME,USERPASS,USERPHON,USERADDR1,USERADDR2,USERADDR3,REGDATE,VERIFY
+	from tb_member
+	where USERID=#{userid}
+</select>
+</mapper>
