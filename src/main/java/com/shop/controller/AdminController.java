@@ -43,6 +43,7 @@ public class AdminController {
 	private AdminService adminService;
 
 	/*
+	 * 
 	 * 관리자화면
 	 */
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
