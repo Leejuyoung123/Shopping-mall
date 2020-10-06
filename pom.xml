@@ -164,7 +164,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.35</version>
+			<version>8.0.16</version>
 		</dependency>
 		<!-- 마이바티스 사용 -->
 		<dependency>
