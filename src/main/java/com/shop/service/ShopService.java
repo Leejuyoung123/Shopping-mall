@@ -2,6 +2,7 @@ package com.shop.service;
 
 import java.util.List;
 
+import com.shop.vo.CartVO;
 import com.shop.vo.GoodsViewVO;
 import com.shop.vo.ReplyListVO;
 import com.shop.vo.ReplyVO;
@@ -25,4 +26,10 @@ public interface ShopService {
 		
 		// 아이디 체크 
 		public String idCheck(int repnum) throws Exception;
+		
+		// 상품 소감 (댓글  삭제)
+		public void modifyReply(ReplyVO reply) throws Exception;
+		
+		// 카트 담기
+		public void addCart(CartVO cart) throws Exception;
 }

@@ -1,7 +1,6 @@
 package com.shop.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shop.service.ShopService;
+import com.shop.vo.CartVO;
 import com.shop.vo.GoodsViewVO;
 import com.shop.vo.MemberVO;
 import com.shop.vo.ReplyListVO;
@@ -116,8 +116,13 @@ public class ShopController {
 		int result = 0;
 		
 		MemberVO member = (MemberVO)session.getAttribute("member");  // 현재 로그인한  member 세션을 가져옴
+		// 스트링 user id 를  서비스에서 받아온 int rep
+		
 		String userid = service.idCheck(reply.getRepnum());  // 소감(댓글)을 작성한 사용자의 아이디를 가져옴
-				
+		
+		System.out.println("도대체 어디서 문제인걸까 reply222222222222"+ reply.getRepnum());
+				System.out.println("userid 서비스로받아온 idcheck 값의 아이디는 ?"+userid); //a@a 내가 지금 세션 으로 들어온 관리자 a@a 값으로 받아와야 정상인데 ?
+				System.out.println("member 아이디의 값은 ??"+member.getUserid()); // 현재 멤버 로그인한 세션은 a@a 라는 사람인데 
 		// 로그인한 아이디와, 소감을 작성한 아이디를 비교
 		if(member.getUserid().equals(userid)) {
 			
@@ -128,11 +133,48 @@ public class ShopController {
 			
 			// 결과값 변경
 			result = 1;
+			System.out.println(result);
 		}
 		
 		// 정상적으로 실행되면 소감 삭제가 진행되고, result값은 1이지만
 		// 비정상적으로 실행되면 소감 삭제가 안되고, result값이 0
 		return result;	
+	}
+	// 상품 소감(댓글) 수정
+	@ResponseBody
+	@RequestMapping(value = "/view/modifyReply", method = RequestMethod.POST)
+	public int modifyReply(ReplyVO reply, HttpSession session) throws Exception {
+	 logger.info("modify reply");
+	 
+	 int result = 0;
+	 
+	 MemberVO member = (MemberVO)session.getAttribute("member");
+	 String userid = service.idCheck(reply.getRepnum());
+	
+	 if(member.getUserid().equals(userid)) {
+	  
+	  reply.setUserid(member.getUserid());
+	  service.modifyReply(reply);
+	  result = 1;
+	  System.out.println("#####################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@############################@@@@@@@@@@@@@"+result);
+	 }
+	 
+	 return result;
+	}
+	
+	// 카트 담기
+	@ResponseBody
+	@RequestMapping(value = "/view/addCart", method = RequestMethod.POST)
+	public int addCart(CartVO cart, HttpSession session) throws Exception {
+		int result = 0;
+		
+		MemberVO member = (MemberVO)session.getAttribute("member");
+		if(member != null) {
+			cart.setUserid(member.getUserid());
+			service.addCart(cart);
+			result =1;
+		}
+		return result;
 	}
 }	
 	

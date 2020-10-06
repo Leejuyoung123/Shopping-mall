@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.shop.persistence.ShopDAO;
+import com.shop.vo.CartVO;
 import com.shop.vo.GoodsViewVO;
 import com.shop.vo.ReplyListVO;
 import com.shop.vo.ReplyVO;
@@ -58,5 +59,14 @@ public class ShopServiceImpl implements ShopService {
 	public String idCheck(int repnum) throws Exception {
 		return dao.idCheck(repnum);
 	}
+	// 상품 소감 (댓글 수정)
+	@Override
+	public void modifyReply(ReplyVO reply) throws Exception {
+		dao.modifyReply(reply);
+	}
 
+	@Override
+	public void addCart(CartVO cart) throws Exception {
+		dao.addCart(cart);
+	}
 }

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.shop.vo.CartVO;
 import com.shop.vo.GoodsViewVO;
 import com.shop.vo.ReplyListVO;
 import com.shop.vo.ReplyVO;
@@ -19,7 +20,7 @@ public class ShopDAOImpl implements ShopDAO {
 	@Inject
 	private SqlSession sql;
 
-	private static String namespace = "com.shop.psersistence.ShopDAO";
+	private static String namespace="com.shop.psersistence.ShopDAO";
 
 	// 카테고리별 상품 리스트 1차 분류
 	@Override
@@ -63,7 +64,17 @@ public class ShopDAOImpl implements ShopDAO {
 	}
 	// 아이디 체크
 	@Override
-	public String idCheck(int repnum) throws Exception {
+	public String idCheck(int repnum ) throws Exception {
 		return sql.selectOne(namespace + ".replyUserIdCheck",repnum);
+	}
+	@Override
+	public void modifyReply(ReplyVO reply) throws Exception {
+		sql.update(namespace + ".modifyReply", reply);
+		
+	}
+
+	@Override
+	public void addCart(CartVO cart) throws Exception {
+		sql.insert(namespace + ".addCart",cart);
 	}
 }

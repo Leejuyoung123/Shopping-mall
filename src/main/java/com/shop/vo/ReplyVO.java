@@ -49,4 +49,8 @@ public class ReplyVO {
 	public void setRepdate(Date repdate) {
 		this.repdate = repdate;
 	}
+	public static void main(String[] args) {
+		ReplyVO vo  =new ReplyVO();
+		System.out.println(vo.getRepnum());
+	}
 }
